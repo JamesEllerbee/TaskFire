@@ -8,8 +8,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.jamesellerbee.taskfireandroid.bl.usecase.SignOutUseCase
 import com.jamesellerbee.taskfireandroid.dal.entities.Page
 import com.jamesellerbee.taskfireandroid.dal.entities.TopBarAction
-import com.jamesellerbee.taskfireandroid.dal.taskfire.TaskFireApi
-import com.jamesellerbee.taskfireandroid.util.ResolutionStrategy
 import com.jamesellerbee.taskfireandroid.util.ServiceLocator
 
 class TaskPage(private val serviceLocator: ServiceLocator) : Page {

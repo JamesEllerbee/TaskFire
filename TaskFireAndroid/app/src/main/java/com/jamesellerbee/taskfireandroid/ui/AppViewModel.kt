@@ -6,7 +6,7 @@ import com.jamesellerbee.taskfireandroid.util.ServiceLocator
 
 class AppViewModel(serviceLocator: ServiceLocator) {
     private val taskFireApi by
-        serviceLocator.resolveLazy<TaskFireApi>(ResolutionStrategy.ByType(TaskFireApi::class))
+    serviceLocator.resolveLazy<TaskFireApi>(ResolutionStrategy.ByType(TaskFireApi::class))
 
     val authenticated get() = taskFireApi.authenticated
 }
