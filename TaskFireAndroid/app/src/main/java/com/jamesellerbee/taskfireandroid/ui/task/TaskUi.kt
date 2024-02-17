@@ -1,8 +1,14 @@
 package com.jamesellerbee.taskfireandroid.ui.task
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.DraggableAnchors
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,13 +29,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.PlaylistRemove
+import androidx.compose.material.icons.filled.RemoveDone
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -66,6 +76,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.jamesellerbee.taskfireandroid.dal.taskfire.Task
 import com.jamesellerbee.taskfireandroid.util.ServiceLocator
@@ -76,16 +87,19 @@ import com.jamesellerbee.taskfireandroid.util.toTimeString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.Instant
 import java.time.ZoneId
-import java.time.temporal.ChronoUnit
+import kotlin.math.roundToInt
 
 sealed class FormAction {
     data class Submit(val account: Task) : FormAction()
     data object Cancel : FormAction()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+enum class DragAnchors {
+    START, DELETE, COMPLETE, EXIT_LEFT, EXIT_RIGHT
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Task(serviceLocator: ServiceLocator) {
     val viewModel = remember { TaskViewModel(serviceLocator) }
@@ -177,15 +191,110 @@ fun Task(serviceLocator: ServiceLocator) {
                                         .weight(1f)
                                 ) {
                                     items(tasks) { task ->
-                                        Row(
-                                            Modifier.padding(
-                                                start = 8.dp,
-                                                end = 8.dp,
-                                                bottom = 8.dp
-                                            )
+                                        val taskScope = rememberCoroutineScope()
+                                        val anchoredDraggableState = remember {
+                                            AnchoredDraggableState(
+                                                initialValue = DragAnchors.START,
+                                                positionalThreshold = { distance -> distance * 0.5f },
+                                                velocityThreshold = { 100f },
+                                                animationSpec = tween()
+                                            ).apply {
+                                                updateAnchors(
+                                                    DraggableAnchors {
+                                                        DragAnchors.START at 0f
+                                                        DragAnchors.COMPLETE at 500f
+                                                        DragAnchors.DELETE at -500f
+                                                        DragAnchors.EXIT_LEFT at -1000f
+                                                    }
+                                                )
+                                            }
+                                        }
+
+                                        if (anchoredDraggableState.currentValue == DragAnchors.DELETE
+                                            || anchoredDraggableState.currentValue == DragAnchors.EXIT_LEFT
                                         ) {
-                                            TaskCard(task, viewModel) {
-                                                selectedTask = it
+                                            LaunchedEffect(null) {
+                                                taskScope.launch {
+                                                    anchoredDraggableState.animateTo(DragAnchors.EXIT_LEFT)
+                                                    viewModel.onInteraction(
+                                                        TaskInteraction.DeleteTask(
+                                                            task = task
+                                                        )
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        if (anchoredDraggableState.currentValue == DragAnchors.COMPLETE) {
+                                            LaunchedEffect(null) {
+                                                viewModel.onInteraction(
+                                                    TaskInteraction.UpsertTask(
+                                                        task = task.copy(completed = !task.completed)
+                                                    )
+                                                )
+
+                                                taskScope.launch {
+                                                    anchoredDraggableState.animateTo(DragAnchors.START)
+                                                }
+                                            }
+                                        }
+
+                                        Box {
+                                            if (anchoredDraggableState.offset < 0f) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Delete,
+                                                    contentDescription = "delete task",
+                                                    tint = MaterialTheme.colorScheme.error,
+                                                    modifier = Modifier
+                                                        .align(Alignment.CenterEnd)
+                                                        .padding(end = 8.dp)
+                                                )
+                                            }
+
+                                            if (anchoredDraggableState.offset > 0f) {
+                                                if (task.completed) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.RemoveDone,
+                                                        contentDescription = "Mark task uncompleted",
+                                                        modifier = Modifier
+                                                            .align(Alignment.CenterStart)
+                                                            .padding(8.dp)
+                                                    )
+                                                } else {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Checklist,
+                                                        contentDescription = "Mark task complete",
+                                                        modifier = Modifier
+                                                            .align(Alignment.CenterStart)
+                                                            .padding(8.dp)
+                                                    )
+                                                }
+                                            }
+
+                                            Row(
+                                                Modifier
+                                                    .padding(
+                                                        start = 8.dp,
+                                                        end = 8.dp,
+                                                        bottom = 8.dp
+                                                    )
+                                                    .offset {
+                                                        IntOffset(
+                                                            x = anchoredDraggableState
+                                                                .requireOffset()
+                                                                .roundToInt(),
+                                                            y = 0
+                                                        )
+                                                    }
+                                                    .anchoredDraggable(
+                                                        state = anchoredDraggableState,
+                                                        orientation = Orientation.Horizontal
+                                                    )
+                                            ) {
+
+                                                TaskCard(task, viewModel) {
+                                                    selectedTask = it
+                                                }
                                             }
                                         }
                                     }
