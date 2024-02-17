@@ -76,7 +76,18 @@ fun Routing.accountRoutes() {
                 .withClaim("accountId", existingAccount.id)
                 .sign(Algorithm.HMAC256(applicationProperties["secret"] as String))
 
-            call.response.cookies.append(Cookie("Authorization", token, path = "/", httpOnly = true))
+
+            call.response.cookies.append(
+                Cookie(
+                    name = "Authorization",
+                    value = token,
+                    path = "/",
+                    httpOnly = false,
+                    secure = true,
+                    domain = "taskfireapi.jamesellerbee.com",
+                    extensions = mapOf("SameSite" to "None", "Partitioned" to "")
+                )
+            )
             call.respond(hashMapOf("id" to existingAccount.id))
         } else {
             call.respond(HttpStatusCode.Unauthorized)

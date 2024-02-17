@@ -154,12 +154,14 @@ fun Application.module() {
     install(CORS) {
         anyHost()
 
+        allowCredentials = true
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.AccessControlAllowOrigin)
         allowHeader(HttpHeaders.Authorization)
 
         allowMethod(HttpMethod.Get)
         allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Delete)
         allowMethod(HttpMethod.Options)
     }
 

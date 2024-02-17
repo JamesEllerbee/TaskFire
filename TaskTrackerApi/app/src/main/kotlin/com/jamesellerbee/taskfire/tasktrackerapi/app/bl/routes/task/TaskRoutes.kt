@@ -101,6 +101,7 @@ fun Routing.taskRoutes() {
             }
 
             taskRepository.removeTask(accountId, taskId)
+            call.respond(HttpStatusCode.OK)
         }
     }
 }
