@@ -32,7 +32,6 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.PlaylistRemove
 import androidx.compose.material.icons.filled.RemoveDone
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
@@ -96,7 +95,7 @@ sealed class FormAction {
 }
 
 enum class DragAnchors {
-    START, DELETE, COMPLETE, EXIT_LEFT, EXIT_RIGHT
+    START, DELETE, COMPLETE, EXIT_LEFT
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -173,6 +172,14 @@ fun Task(serviceLocator: ServiceLocator) {
                 Box {
                     Column {
                         if (selectedTask == null) {
+                            Text(
+                                text = "Hello, ${viewModel.username}!",
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(top = 4.dp)
+                            )
+
                             val tasks = viewModel.tasks.collectAsState().value
                             if (tasks.isEmpty()) {
                                 Row(
@@ -458,7 +465,7 @@ fun TaskForm(onFormAction: (FormAction) -> Unit) {
                 title = it
             },
             label = { Text("Title") },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )

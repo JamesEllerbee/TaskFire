@@ -21,6 +21,8 @@ class TaskViewModel(serviceLocator: ServiceLocator) {
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks = _tasks.asStateFlow()
 
+    val username get() = taskFireApi.account.name
+
     init {
         CoroutineScope(Dispatchers.IO).launch(CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
@@ -37,7 +39,7 @@ class TaskViewModel(serviceLocator: ServiceLocator) {
                 }) {
                     taskFireApi.taskFireService.createTask(
                         cookie = taskFireApi.cookie,
-                        accountId = taskFireApi.accountId,
+                        accountId = taskFireApi.account.id,
                         task = interaction.task
                     ).execute()
 
@@ -51,7 +53,7 @@ class TaskViewModel(serviceLocator: ServiceLocator) {
                 }) {
                     taskFireApi.taskFireService.deleteTask(
                         cookie = taskFireApi.cookie,
-                        accountId = taskFireApi.accountId,
+                        accountId = taskFireApi.account.id,
                         taskId = interaction.task.taskId
                     ).execute()
 
@@ -73,7 +75,7 @@ class TaskViewModel(serviceLocator: ServiceLocator) {
     private fun refreshList() {
         val response = taskFireApi.taskFireService.getTasks(
             cookie = taskFireApi.cookie,
-            accountId = taskFireApi.accountId,
+            accountId = taskFireApi.account.id,
         ).execute()
 
         if (response.isSuccessful) {
