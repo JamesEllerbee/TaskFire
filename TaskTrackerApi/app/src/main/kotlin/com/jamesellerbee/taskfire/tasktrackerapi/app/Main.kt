@@ -103,13 +103,15 @@ fun main(args: Array<String>) {
         )
     )
 
+    logger.info("Setting up SSL cert")
+
     // Set up keystore if it does not exist
     val keyStoreFile = File("keystore.jks")
     val keyStore = if (!keyStoreFile.exists()) {
         val keyStore = buildKeyStore {
             certificate("taskfireapi") {
                 password = applicationProperties["certificatePassword"] as String
-                domains = listOf("127.0.0.1", "0.0.0.0", "localhost")
+                domains = listOf("taskfireapi.jamesellerbee.com")
             }
         }
 
