@@ -2,6 +2,7 @@ package com.jamesellerbee.taskfire.tasktrackerapi.app
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.jamesellerbee.taskfire.tasktrackerapi.app.bl.account.AccountResetService
 import com.jamesellerbee.taskfire.tasktrackerapi.app.bl.routes.account.accountRoutes
 import com.jamesellerbee.taskfire.tasktrackerapi.app.bl.routes.task.taskRoutes
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Account
@@ -125,6 +126,13 @@ fun main(args: Array<String>) {
         RegistrationStrategy.Singleton(
             type = AdminRepository::class,
             service = adminRepository
+        )
+    )
+
+    serviceLocator.register(
+        RegistrationStrategy.Singleton(
+            type = AccountResetService::class,
+            service = AccountResetService()
         )
     )
 

@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import org.apache.commons.validator.routines.EmailValidator
 import org.mindrot.jbcrypt.BCrypt
 import org.slf4j.LoggerFactory
+import java.security.MessageDigest
 
 /**
  * Routes related to accounts.
@@ -253,5 +254,59 @@ fun Routing.accountRoutes() {
 
         accountRepository.addAccount(account.copy(verified = true))
         call.respondRedirect("https://taskfire.jamesellerbee.com/")
+    }
+
+    get(path = "/passwordReset/{accountId}") {
+        val accountId = call.parameters["accountId"]
+
+        if (accountId == null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@get
+        }
+
+        // send reset link to the email associated with the account id
+        val account = accountRepository.getAccount(accountId)
+
+        if (account == null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@get
+        }
+
+        // generate reset key and stash it with account reset service.
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        val digest = messageDigest.digest(account.hashCode().toString().toByteArray())
+        val resetKey = digest.fold("") { str, byte -> str + "%02x".format(byte) }
+
+        // generate reset link
+        val resetLink = "https://taskfire.jamesellerbee.com/resetPassword/$accountId/$resetKey"
+
+        logger.debug("Reste link is $resetLink")
+
+        emailSender?.let {
+            CoroutineScope(SupervisorJob()).launch(CoroutineExceptionHandler { coroutineContext, throwable ->
+                logger.error("Error: ", throwable)
+            }) {
+
+
+                emailSender.sendVerificationEmail(account.email, resetLink)
+            }
+        }
+    }
+
+    post(path = "/passwordReset/{accountId}/{resetKey}") {
+        val accountId = call.parameters["accountId"]
+        val resetKey = call.parameters["resetKey"]
+
+        if (accountId == null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@post
+        }
+
+        if(resetKey == null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@post
+        }
+
+
     }
 }
