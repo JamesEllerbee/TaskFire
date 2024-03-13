@@ -2,7 +2,10 @@ package com.jamesellerbee.taskfire.tasktrackerapi.app.bl.routes.account
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.jamesellerbee.taskfire.tasktrackerapi.app.bl.account.AccountResetService
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Account
+import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Email
+import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Password
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.properties.ApplicationProperties
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.stmp.GoogleSmtpEmailSender
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.AccountRepository
@@ -54,6 +57,10 @@ fun Routing.accountRoutes() {
     val emailSender = serviceLocator.resolve<GoogleSmtpEmailSender>(
         ResolutionStrategy.ByType(type = GoogleSmtpEmailSender::class)
     )
+
+    val accountResetService = serviceLocator.resolve<AccountResetService>(
+        ResolutionStrategy.ByType(type = AccountResetService::class)
+    )!!
 
     authenticate("auth-jwt") {
 
@@ -256,20 +263,17 @@ fun Routing.accountRoutes() {
         call.respondRedirect("https://taskfire.jamesellerbee.com/")
     }
 
-    get(path = "/passwordReset/{accountId}") {
-        val accountId = call.parameters["accountId"]
-
-        if (accountId == null) {
-            call.respond(HttpStatusCode.BadRequest)
-            return@get
-        }
+    post(path = "/passwordReset") {
+        val email = call.receive<Email>()
 
         // send reset link to the email associated with the account id
-        val account = accountRepository.getAccount(accountId)
+        val account = accountRepository.getAccounts().firstOrNull { account ->
+            account.email == email.email
+        }
 
         if (account == null) {
             call.respond(HttpStatusCode.BadRequest)
-            return@get
+            return@post
         }
 
         // generate reset key and stash it with account reset service.
@@ -277,36 +281,66 @@ fun Routing.accountRoutes() {
         val digest = messageDigest.digest(account.hashCode().toString().toByteArray())
         val resetKey = digest.fold("") { str, byte -> str + "%02x".format(byte) }
 
-        // generate reset link
-        val resetLink = "https://taskfire.jamesellerbee.com/resetPassword/$accountId/$resetKey"
+        accountResetService.putResetKey(account.id, resetKey)
 
-        logger.debug("Reste link is $resetLink")
+        // generate reset link
+        val resetLink = "https://taskfire.jamesellerbee.com/resetPassword/${account.id}/$resetKey"
+
+        logger.debug("Reset link is $resetLink")
 
         emailSender?.let {
             CoroutineScope(SupervisorJob()).launch(CoroutineExceptionHandler { coroutineContext, throwable ->
                 logger.error("Error: ", throwable)
             }) {
-
-
                 emailSender.sendVerificationEmail(account.email, resetLink)
             }
         }
     }
 
     post(path = "/passwordReset/{accountId}/{resetKey}") {
+        val password = call.receive<Password>()
+
+        if (password.password.isBlank()) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@post
+        }
+
         val accountId = call.parameters["accountId"]
         val resetKey = call.parameters["resetKey"]
 
         if (accountId == null) {
+            logger.warn("Account was null, responding with https status code bad request")
             call.respond(HttpStatusCode.BadRequest)
             return@post
         }
 
-        if(resetKey == null) {
+        if (resetKey == null) {
+            logger.warn("Provided reset key was null, responding with https status code bad request")
             call.respond(HttpStatusCode.BadRequest)
             return@post
         }
 
+        // Check that the provided reset key and matches the reset key mapped to the account id
+        if (accountResetService.getKey(accountId) != resetKey) {
+            logger.warn("Provided reset key does not match any reset mapped to the provided account id.")
+            call.respond(HttpStatusCode.BadRequest)
+            return@post
+        }
 
+        accountRepository.getAccount(accountId)?.let { account ->
+            accountRepository.addAccount(
+                account.copy(
+                    password = BCrypt.hashpw(password.password, BCrypt.gensalt())
+                )
+            )
+
+            logger.info("Password was updated.")
+
+            call.respond(HttpStatusCode.OK)
+
+        } ?: run {
+            logger.warn("Could not find an existing account with the provided account id.")
+            call.respond(HttpStatusCode.BadRequest)
+        }
     }
 }

@@ -11,3 +11,8 @@ data class Account(
     val created: Long = 0,
     val verified: Boolean = false,
 )
+
+@Serializable
+data class Email(val email: String)
+
+data class Password(val password: String)

@@ -2,6 +2,7 @@ package com.jamesellerbee.taskfire.tasktrackerapi.app.bl.account
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -16,12 +17,23 @@ class AccountResetService {
     init {
         CoroutineScope(SupervisorJob()).launch {
             while (isActive) {
-                resetMap.entries.forEach { entry ->
-                    if (entry.value.timeStamp <= System.currentTimeMillis() - 1.2e+6) {
+                resetMap.entries.filter { entry ->
+                    entry.value.timeStamp <= System.currentTimeMillis() - 1.2e+6
+                }
+                    .forEach { entry ->
                         resetMap.remove(entry.key)
                     }
-                }
+
+                delay(10000)
             }
         }
+    }
+
+    fun putResetKey(accountId: String, resetKey: String) {
+        resetMap[accountId] = ResetKey(resetKey, System.currentTimeMillis())
+    }
+
+    fun getKey(accountId: String): String? {
+        return resetMap[accountId]?.resetKey
     }
 }
