@@ -1,9 +1,10 @@
 package com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.task
 
-import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Task
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.TaskRepository
 import com.jamesellerbee.taskfire.tasktrackerapi.app.util.ExposedDatabaseHelper
-import com.jamesellerbee.taskfire.tasktrackerapi.app.util.ServiceLocator
+import com.jamesellerbee.taskfire.tasktrackerapi.app.util.ExposedDatabaseHelper.init
+import com.jamesellerbee.tasktracker.lib.entities.Task
+import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -12,7 +13,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class ExposedTaskRepository(serviceLocator: ServiceLocator) : TaskRepository {
-    private val database = ExposedDatabaseHelper.init(serviceLocator)
+    private val database = init(serviceLocator)
 
     override fun getTasks(): List<Task> {
         val tasks = mutableListOf<Task>()

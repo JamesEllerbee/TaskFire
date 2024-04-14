@@ -1,7 +1,7 @@
 package com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.account
 
-import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Account
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.AccountRepository
+import com.jamesellerbee.tasktracker.lib.entities.Account
 
 class InMemoryAccountRepository : AccountRepository {
     private val accounts = mutableMapOf<String, Account>()

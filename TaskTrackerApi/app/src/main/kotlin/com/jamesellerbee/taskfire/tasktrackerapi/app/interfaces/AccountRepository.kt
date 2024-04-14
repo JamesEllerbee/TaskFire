@@ -1,6 +1,6 @@
 package com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces
 
-import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Account
+import com.jamesellerbee.tasktracker.lib.entities.Account
 
 interface AccountRepository {
     fun addAccount(newAccount: Account)

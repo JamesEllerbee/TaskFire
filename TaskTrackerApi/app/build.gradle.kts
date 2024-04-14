@@ -8,12 +8,6 @@ plugins {
 group = "com.jamesellerbee.taskfire.trasktrackerapi"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-    google()
-    gradlePluginPortal()
-}
-
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:2.3.8")
     implementation("io.ktor:ktor-server-netty-jvm:2.3.8")
@@ -43,6 +37,8 @@ dependencies {
 
     implementation("org.apache.commons:commons-email:1.5")
     implementation("commons-validator:commons-validator:1.8.0")
+
+    implementation(project(":lib"))
 
 }
 

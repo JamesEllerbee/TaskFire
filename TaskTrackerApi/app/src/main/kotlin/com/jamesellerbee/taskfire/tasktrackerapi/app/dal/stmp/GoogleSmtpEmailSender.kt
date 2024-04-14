@@ -1,8 +1,8 @@
 package com.jamesellerbee.taskfire.tasktrackerapi.app.dal.stmp
 
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.properties.ApplicationProperties
-import com.jamesellerbee.taskfire.tasktrackerapi.app.util.ResolutionStrategy
-import com.jamesellerbee.taskfire.tasktrackerapi.app.util.ServiceLocator
+import com.jamesellerbee.tasktracker.lib.util.ResolutionStrategy
+import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
 import org.apache.commons.mail.SimpleEmail
 
 class GoogleSmtpEmailSender(serviceLocator: ServiceLocator) {

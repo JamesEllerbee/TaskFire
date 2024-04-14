@@ -1,7 +1,7 @@
 package com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.account
 
-import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Admin
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.AdminRepository
+import com.jamesellerbee.tasktracker.lib.entities.Admin
 
 class InMemoryAdminRepository : AdminRepository {
     private val admins = mutableMapOf<String, Admin>()

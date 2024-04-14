@@ -5,6 +5,8 @@ import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.DatabaseType
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.account.ExposedAccountRepository
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.account.ExposedAdminRepository
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.task.ExposedTaskRepository
+import com.jamesellerbee.tasktracker.lib.util.ResolutionStrategy
+import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
 import java.io.File
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -12,7 +14,6 @@ import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 object ExposedDatabaseHelper {

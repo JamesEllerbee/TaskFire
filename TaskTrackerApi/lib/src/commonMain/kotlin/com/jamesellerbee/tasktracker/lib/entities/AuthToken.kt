@@ -1,4 +1,4 @@
-package com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites
+package com.jamesellerbee.tasktracker.lib.entities
 
 import kotlinx.serialization.Serializable
 

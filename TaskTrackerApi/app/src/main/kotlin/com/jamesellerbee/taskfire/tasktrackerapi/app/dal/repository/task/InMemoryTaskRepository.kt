@@ -1,7 +1,7 @@
 package com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.task
 
-import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Task
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.TaskRepository
+import com.jamesellerbee.tasktracker.lib.entities.Task
 
 class InMemoryTaskRepository : TaskRepository {
     private val taskMap = mutableMapOf<String, MutableList<Task>>()

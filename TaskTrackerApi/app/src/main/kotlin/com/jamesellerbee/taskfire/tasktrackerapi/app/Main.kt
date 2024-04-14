@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.jamesellerbee.taskfire.tasktrackerapi.app.bl.account.AccountResetService
 import com.jamesellerbee.taskfire.tasktrackerapi.app.bl.routes.account.accountRoutes
 import com.jamesellerbee.taskfire.tasktrackerapi.app.bl.routes.task.taskRoutes
-import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Account
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.properties.ApplicationProperties
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.account.ExposedAccountRepository
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.repository.account.ExposedAdminRepository
@@ -17,9 +16,10 @@ import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.stmp.GoogleSmtpEmailSen
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.AccountRepository
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.AdminRepository
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.TaskRepository
-import com.jamesellerbee.taskfire.tasktrackerapi.app.util.RegistrationStrategy
-import com.jamesellerbee.taskfire.tasktrackerapi.app.util.ResolutionStrategy
-import com.jamesellerbee.taskfire.tasktrackerapi.app.util.ServiceLocator
+import com.jamesellerbee.tasktracker.lib.entities.Account
+import com.jamesellerbee.tasktracker.lib.util.RegistrationStrategy
+import com.jamesellerbee.tasktracker.lib.util.ResolutionStrategy
+import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.auth.parseAuthorizationHeader
@@ -34,7 +34,6 @@ import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.engine.sslConnector
-import io.ktor.server.http.content.react
 import io.ktor.server.http.content.singlePageApplication
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.callloging.CallLogging
@@ -291,11 +290,12 @@ fun Application.module() {
             logger.warn("openApiPath property not set")
         }
 
-        applicationProperties["adminPortalReactAppPath"]?.let { adminPortalReactAppPath ->
-            logger.debug("Serving admin portal from path {}", adminPortalReactAppPath)
+        applicationProperties["adminPortalAppPath"]?.let { adminPortalAppPath ->
+            logger.debug("Serving admin portal from path {}", adminPortalAppPath)
             singlePageApplication {
                 applicationRoute = "/admin-portal"
-                react(adminPortalReactAppPath as String)
+                filesPath = adminPortalAppPath as String
+//                react(adminPortalReactAppPath as String)
             }
         } ?: run {
             logger.warn("adminPortalReactAppPath property not set")

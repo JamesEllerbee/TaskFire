@@ -3,15 +3,15 @@ package com.jamesellerbee.taskfire.tasktrackerapi.app.bl.routes.account
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.jamesellerbee.taskfire.tasktrackerapi.app.bl.account.AccountResetService
-import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Account
-import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Email
-import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.entites.Password
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.properties.ApplicationProperties
 import com.jamesellerbee.taskfire.tasktrackerapi.app.dal.stmp.GoogleSmtpEmailSender
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.AccountRepository
 import com.jamesellerbee.taskfire.tasktrackerapi.app.interfaces.AdminRepository
-import com.jamesellerbee.taskfire.tasktrackerapi.app.util.ResolutionStrategy
-import com.jamesellerbee.taskfire.tasktrackerapi.app.util.ServiceLocator
+import com.jamesellerbee.tasktracker.lib.entities.Account
+import com.jamesellerbee.tasktracker.lib.entities.Email
+import com.jamesellerbee.tasktracker.lib.entities.Password
+import com.jamesellerbee.tasktracker.lib.util.ResolutionStrategy
+import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
 import io.ktor.http.Cookie
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -24,6 +24,7 @@ import io.ktor.server.routing.Routing
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import java.security.MessageDigest
 import java.util.UUID
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +33,6 @@ import kotlinx.coroutines.launch
 import org.apache.commons.validator.routines.EmailValidator
 import org.mindrot.jbcrypt.BCrypt
 import org.slf4j.LoggerFactory
-import java.security.MessageDigest
 
 /**
  * Routes related to accounts.
