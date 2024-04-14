@@ -295,7 +295,6 @@ fun Application.module() {
             singlePageApplication {
                 applicationRoute = "/admin-portal"
                 filesPath = adminPortalAppPath as String
-//                react(adminPortalReactAppPath as String)
             }
         } ?: run {
             logger.warn("adminPortalReactAppPath property not set")

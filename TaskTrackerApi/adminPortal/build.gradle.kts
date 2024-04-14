@@ -25,7 +25,13 @@ kotlin {
         }
     }
 
+    jvm("desktop") {
+        jvmToolchain(19)
+    }
+
     sourceSets {
+        val desktopMain by getting
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -41,6 +47,11 @@ kotlin {
             implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.0")
 
             implementation(project(":lib"))
+        }
+
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation("io.ktor:ktor-client-java:3.0.0-wasm2")
         }
     }
 }
