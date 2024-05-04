@@ -44,3 +44,4 @@ bin/
 /data/
 /keystore.jks
 /docs/
+/adminPortal/adminPortal.properties

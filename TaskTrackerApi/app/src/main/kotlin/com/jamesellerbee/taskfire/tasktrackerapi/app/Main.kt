@@ -76,6 +76,7 @@ fun main(args: Array<String>) {
 
     val logger = LoggerFactory.getLogger("main")
     logger.info("Starting up")
+    logger.debug("Configuration: propertiesPath = {}, inMemory = {}, noEmail = {}", propertiesPath, inMemory, noEmail)
 
     val serviceLocator = ServiceLocator.instance
 
@@ -143,7 +144,7 @@ fun main(args: Array<String>) {
         val keyStore = buildKeyStore {
             certificate("taskfireapi") {
                 password = applicationProperties["certificatePassword"] as String
-                domains = listOf("taskfireapi.jamesellerbee.com")
+                domains = listOf("taskfireapi.jamesellerbee.com", "localhost")
             }
         }
 

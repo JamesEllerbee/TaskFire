@@ -29,7 +29,6 @@ class ServiceLocator {
         return lazy { resolve(resolutionStrategy)!! }
     }
 
-
     companion object {
         val instance = ServiceLocator()
     }

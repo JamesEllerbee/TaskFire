@@ -7,9 +7,7 @@ import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
@@ -29,17 +27,17 @@ class AppViewModel(serviceLocator: ServiceLocator, isSystemInDarkTheme: Boolean)
     val authed = restRequestService.isAuthed
 
     val useDarkTheme = appPropertiesProvider.propertiesFlow.map {
-        appPropertiesProvider.get(property = AppPropertiesProvider.APP_THEME, isSystemInDarkTheme) as Boolean
+        appPropertiesProvider.get(property = AppPropertiesProvider.USE_DARK_MODE, isSystemInDarkTheme) as Boolean
     }.stateIn(
         scope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
         started = SharingStarted.Eagerly,
         initialValue = appPropertiesProvider.get(
-            property = AppPropertiesProvider.APP_THEME,
+            property = AppPropertiesProvider.USE_DARK_MODE,
             isSystemInDarkTheme
-        ) as Boolean
+        )
     )
 
     fun setTheme(useDarkTheme: Boolean) {
-        appPropertiesProvider.set(AppPropertiesProvider.APP_THEME, useDarkTheme)
+        appPropertiesProvider.set(AppPropertiesProvider.USE_DARK_MODE, useDarkTheme)
     }
 }

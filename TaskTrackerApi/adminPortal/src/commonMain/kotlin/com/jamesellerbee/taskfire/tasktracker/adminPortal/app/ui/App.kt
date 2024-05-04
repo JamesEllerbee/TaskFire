@@ -14,6 +14,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -43,7 +44,17 @@ fun App(serviceLocator: ServiceLocator) {
     val useDarkTheme = viewModel.useDarkTheme.collectAsState().value
     AppTheme(useDarkTheme = useDarkTheme) {
         Scaffold(
-            topBar = { TopAppBar(title = { Text("Taskfire admin portal") }) },
+            topBar = {
+                TopAppBar(
+                    title = { Text("Taskfire admin portal") },
+                    actions = {
+                        IconButton(onClick = {
+
+                        }) {
+                            Icon(Icons.Default.Settings, "Show app context menu")
+                        }
+                    })
+            },
             bottomBar = {
                 BottomAppBar {
                     Spacer(Modifier.weight(1f))

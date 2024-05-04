@@ -1,13 +1,12 @@
 package com.jamesellerbee.taskfire.tasktracker.adminPortal.app.dal.rest
 
+import com.jamesellerbee.taskfire.tasktracker.adminPortal.app.ui.interfaces.AppPropertiesProvider
+import com.jamesellerbee.taskfire.tasktracker.adminPortal.app.ui.interfaces.HttpClientProvider
 import com.jamesellerbee.tasktracker.lib.entities.Account
 import com.jamesellerbee.tasktracker.lib.interfaces.MultiplatformLogger
 import com.jamesellerbee.tasktracker.lib.util.ResolutionStrategy
 import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -15,7 +14,6 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -33,24 +31,27 @@ sealed class Request {
     data class DeleteAccount(val accountId: String, val onComplete: (Boolean) -> Unit) : Request()
 }
 
-class RestRequestService(serviceLocator: ServiceLocator, useLocalHost: Boolean = false) {
-    private val logger by serviceLocator.resolveLazy<MultiplatformLogger>(ResolutionStrategy.ByType(type = MultiplatformLogger::class))
+class RestRequestService(serviceLocator: ServiceLocator, useLocalHost: Boolean = true) {
+    private val logger by serviceLocator.resolveLazy<MultiplatformLogger>(
+        ResolutionStrategy.ByType(type = MultiplatformLogger::class)
+    )
+
+    private val httpClientProvider by serviceLocator.resolveLazy<HttpClientProvider>(
+        ResolutionStrategy.ByType(type = HttpClientProvider::class)
+    )
+
+    private val appPropertiesProvider by serviceLocator.resolveLazy<AppPropertiesProvider>(
+        ResolutionStrategy.ByType(
+            type = AppPropertiesProvider::class
+        )
+    )
 
     private val _isAuthed = MutableStateFlow(false)
     val isAuthed = _isAuthed.asStateFlow()
 
-    private val domain = if (useLocalHost) {
-        "http://localhost:8080"
-    } else {
-        "https://taskfireapi.jamesellerbee.com"
-    }
+    private val domain by lazy { appPropertiesProvider.get(AppPropertiesProvider.DOMAIN, "") }
 
-    private val client = HttpClient {
-        install(HttpCookies)
-        install(ContentNegotiation) {
-            json()
-        }
-    }
+    private val client get() = httpClientProvider.httpClient
 
     private val requests = Channel<Request>(BUFFERED)
 
