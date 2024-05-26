@@ -25,5 +25,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "TaskTrackerApi"
-include(":api", ":adminPortal", ":lib")
-
+include(":api", ":app", ":lib")

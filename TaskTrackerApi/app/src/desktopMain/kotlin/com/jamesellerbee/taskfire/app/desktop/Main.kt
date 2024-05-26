@@ -1,13 +1,13 @@
-package com.jamesellerbee.taskfire.adminPortal.desktop
+package com.jamesellerbee.taskfire.app.desktop
 
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.jamesellerbee.taskfire.adminPortal.desktop.dal.http.DesktopHttpClientProvider
-import com.jamesellerbee.taskfire.adminPortal.desktop.dal.settings.DesktopAppPropertiesProvider
-import com.jamesellerbee.taskfire.tasktracker.adminPortal.app.ui.App
-import com.jamesellerbee.tasktracker.lib.interfaces.AppPropertiesProvider
-import com.jamesellerbee.tasktracker.lib.interfaces.HttpClientProvider
+import com.jamesellerbee.taskfire.app.desktop.dal.http.DesktopHttpClientProvider
+import com.jamesellerbee.taskfire.app.desktop.dal.settings.DesktopAppPropertiesProvider
+import com.jamesellerbee.taskfire.app.interfaces.AppPropertiesProvider
+import com.jamesellerbee.taskfire.app.interfaces.HttpClientProvider
+import com.jamesellerbee.taskfire.app.ui.App
 import com.jamesellerbee.tasktracker.lib.interfaces.MultiplatformLogger
 import com.jamesellerbee.tasktracker.lib.util.ConsoleLogger
 import com.jamesellerbee.tasktracker.lib.util.RegistrationStrategy
@@ -39,7 +39,7 @@ fun main(args: Array<String>) = application {
         }
     }
 
-    Window(onCloseRequest = ::exitApplication, title = "Taskfire admin portal") {
+    Window(onCloseRequest = ::exitApplication, title = "Taskfire") {
         App(serviceLocator)
     }
 }

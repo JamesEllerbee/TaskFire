@@ -5,7 +5,7 @@ plugins {
     application
 }
 
-group = "com.jamesellerbee.taskfire.trasktrackerapi"
+group = "com.jamesellerbee.taskfire.api"
 version = "1.0-SNAPSHOT"
 
 dependencies {
@@ -47,7 +47,7 @@ kotlin {
 }
 
 application {
-    mainClass = "com.jamesellerbee.taskfire.tasktrackerapi.app.MainKt"
+    mainClass = "com.jamesellerbee.taskfire.api.MainKt"
 }
 
 tasks {

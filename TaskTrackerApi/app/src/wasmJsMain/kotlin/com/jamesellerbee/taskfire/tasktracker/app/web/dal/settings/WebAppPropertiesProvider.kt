@@ -1,6 +1,5 @@
-package com.jamesellerbee.taskfire.tasktracker.adminportal.web.dal.settings
+package com.jamesellerbee.taskfire.tasktracker.app.web.dal.settings
 
-import com.jamesellerbee.tasktracker.lib.interfaces.AppPropertiesProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

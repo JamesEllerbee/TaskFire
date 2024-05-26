@@ -1,6 +1,6 @@
-package com.jamesellerbee.taskfire.adminPortal.desktop.dal.settings
+package com.jamesellerbee.taskfire.app.desktop.dal.settings
 
-import com.jamesellerbee.tasktracker.lib.interfaces.AppPropertiesProvider
+import com.jamesellerbee.taskfire.app.interfaces.AppPropertiesProvider
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -26,7 +26,7 @@ class DesktopAppPropertiesProvider : AppPropertiesProvider {
 
     init {
         CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-            properties.load(FileInputStream(File("adminPortal.properties")))
+            properties.load(FileInputStream(File("app.properties")))
         }
     }
 

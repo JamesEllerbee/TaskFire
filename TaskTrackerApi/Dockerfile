@@ -5,4 +5,4 @@ WORKDIR /workdir
 RUN apk add openjdk19
 
 COPY ./app/build/libs/taskfireapi.jar /workdir/jars/
-COPY ./trackerApi.properties /workdir/
+COPY taskfireApi.properties /workdir/

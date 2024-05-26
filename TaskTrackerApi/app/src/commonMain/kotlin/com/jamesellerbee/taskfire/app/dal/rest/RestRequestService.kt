@@ -1,8 +1,8 @@
-package com.jamesellerbee.taskfire.tasktracker.adminPortal.app.dal.rest
+package com.jamesellerbee.taskfire.app.dal.rest
 
+import com.jamesellerbee.taskfire.app.interfaces.AppPropertiesProvider
+import com.jamesellerbee.taskfire.app.interfaces.HttpClientProvider
 import com.jamesellerbee.tasktracker.lib.entities.Account
-import com.jamesellerbee.tasktracker.lib.interfaces.AppPropertiesProvider
-import com.jamesellerbee.tasktracker.lib.interfaces.HttpClientProvider
 import com.jamesellerbee.tasktracker.lib.interfaces.MultiplatformLogger
 import com.jamesellerbee.tasktracker.lib.util.ResolutionStrategy
 import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
@@ -31,7 +31,7 @@ sealed class Request {
     data class DeleteAccount(val accountId: String, val onComplete: (Boolean) -> Unit) : Request()
 }
 
-class RestRequestService(serviceLocator: ServiceLocator, useLocalHost: Boolean = true) {
+class RestRequestService(serviceLocator: ServiceLocator) {
     private val logger by serviceLocator.resolveLazy<MultiplatformLogger>(
         ResolutionStrategy.ByType(type = MultiplatformLogger::class)
     )

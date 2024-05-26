@@ -1,7 +1,7 @@
-package com.jamesellerbee.taskfire.adminPortal.desktop.dal.http
+package com.jamesellerbee.taskfire.app.desktop.dal.http
 
-import com.jamesellerbee.tasktracker.lib.interfaces.AppPropertiesProvider
-import com.jamesellerbee.tasktracker.lib.interfaces.HttpClientProvider
+import com.jamesellerbee.taskfire.app.interfaces.AppPropertiesProvider
+import com.jamesellerbee.taskfire.app.interfaces.HttpClientProvider
 import com.jamesellerbee.tasktracker.lib.util.ResolutionStrategy
 import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
 import io.ktor.client.HttpClient

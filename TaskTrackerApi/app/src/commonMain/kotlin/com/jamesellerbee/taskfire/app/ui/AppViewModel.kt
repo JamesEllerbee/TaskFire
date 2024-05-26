@@ -1,7 +1,7 @@
-package com.jamesellerbee.taskfire.tasktracker.adminPortal.app.ui
+package com.jamesellerbee.taskfire.app.ui
 
-import com.jamesellerbee.taskfire.tasktracker.adminPortal.app.dal.rest.RestRequestService
-import com.jamesellerbee.tasktracker.lib.interfaces.AppPropertiesProvider
+import com.jamesellerbee.taskfire.app.dal.rest.RestRequestService
+import com.jamesellerbee.taskfire.app.interfaces.AppPropertiesProvider
 import com.jamesellerbee.tasktracker.lib.util.ResolutionStrategy
 import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +27,7 @@ class AppViewModel(serviceLocator: ServiceLocator, isSystemInDarkTheme: Boolean)
     val authed = restRequestService.isAuthed
 
     val useDarkTheme = appPropertiesProvider.propertiesFlow.map {
-        appPropertiesProvider.get(property = AppPropertiesProvider.USE_DARK_MODE, isSystemInDarkTheme) as Boolean
+        appPropertiesProvider.get(property = AppPropertiesProvider.USE_DARK_MODE, isSystemInDarkTheme)
     }.stateIn(
         scope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
         started = SharingStarted.Eagerly,
