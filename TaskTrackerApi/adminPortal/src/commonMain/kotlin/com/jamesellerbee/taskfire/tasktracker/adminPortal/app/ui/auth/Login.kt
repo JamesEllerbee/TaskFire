@@ -34,7 +34,8 @@ fun Login(serviceLocator: ServiceLocator, modifier: Modifier = Modifier) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val isLoggingIn = viewModel.isLoggingIn.collectAsState().value
+//    val isLoggingIn = viewModel.isLoggingIn.collectAsState().value
+    val isLoggingIn = false
     val isLoginSuccess = viewModel.isLoginSuccess.collectAsState().value
 
     Column(

@@ -5,7 +5,6 @@ import com.jamesellerbee.taskfire.app.interfaces.AppPropertiesProvider
 import com.jamesellerbee.tasktracker.lib.util.ResolutionStrategy
 import com.jamesellerbee.tasktracker.lib.util.ServiceLocator
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -29,7 +28,7 @@ class AppViewModel(serviceLocator: ServiceLocator, isSystemInDarkTheme: Boolean)
     val useDarkTheme = appPropertiesProvider.propertiesFlow.map {
         appPropertiesProvider.get(property = AppPropertiesProvider.USE_DARK_MODE, isSystemInDarkTheme)
     }.stateIn(
-        scope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
+        scope = CoroutineScope(SupervisorJob()),
         started = SharingStarted.Eagerly,
         initialValue = appPropertiesProvider.get(
             property = AppPropertiesProvider.USE_DARK_MODE,

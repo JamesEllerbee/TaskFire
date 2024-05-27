@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.jamesellerbee.taskfire.app.dal.rest.RestRequestService
 import com.jamesellerbee.taskfire.app.ui.auth.Login
-import com.jamesellerbee.taskfire.app.ui.admin.dashboard.AdminDashboard
 import com.jamesellerbee.taskfire.app.ui.dashboard.Dashboard
 import com.jamesellerbee.taskfire.app.ui.theme.AppTheme
 import com.jamesellerbee.tasktracker.lib.util.RegistrationStrategy

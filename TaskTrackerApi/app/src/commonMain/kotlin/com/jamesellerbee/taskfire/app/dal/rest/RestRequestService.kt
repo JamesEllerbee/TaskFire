@@ -50,13 +50,12 @@ class RestRequestService(serviceLocator: ServiceLocator) {
     val isAuthed = _isAuthed.asStateFlow()
 
     private val domain by lazy { appPropertiesProvider.get(AppPropertiesProvider.DOMAIN, "") }
-
     private val client get() = httpClientProvider.httpClient
 
     private val requests = Channel<Request>(BUFFERED)
 
     init {
-        CoroutineScope(SupervisorJob()).launch(Dispatchers.Default) {
+        CoroutineScope(SupervisorJob()).launch {
             while (isActive) {
                 val request = requests.receive()
                 try {

@@ -39,9 +39,11 @@ fun App(serviceLocator: ServiceLocator) {
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val viewModel = remember { AppViewModel(serviceLocator, isSystemInDarkTheme) }
-    val authed = viewModel.authed.collectAsState().value
+//    val authed = viewModel.authed.collectAsState().value
+    val authed = false
 
-    val useDarkTheme = viewModel.useDarkTheme.collectAsState().value
+//    val useDarkTheme = viewModel.useDarkTheme.collectAsState().value
+    val useDarkTheme = false
     AppTheme(useDarkTheme = useDarkTheme) {
         Scaffold(
             topBar = {

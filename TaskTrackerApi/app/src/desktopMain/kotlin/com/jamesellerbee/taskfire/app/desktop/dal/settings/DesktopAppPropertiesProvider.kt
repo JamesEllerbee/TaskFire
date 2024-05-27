@@ -49,7 +49,7 @@ class DesktopAppPropertiesProvider : AppPropertiesProvider {
     override fun set(property: String, value: Any) {
         properties.setProperty(property, value.toString())
 
-        CoroutineScope(SupervisorJob()).launch(Dispatchers.Default) {
+        CoroutineScope(SupervisorJob()).launch {
             _propertiesFlow.emit(Pair(property, value))
 
             withContext(Dispatchers.IO) {

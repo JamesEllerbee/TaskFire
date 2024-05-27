@@ -29,7 +29,7 @@ class DesktopHttpClientProvider(serviceLocator: ServiceLocator) : HttpClientProv
                 json()
             }
 
-            if (appPropertiesProvider.get(AppPropertiesProvider.ALLOW_SELF_SIGNED_CERT, true)) {
+            if (appPropertiesProvider.get(AppPropertiesProvider.ALLOW_SELF_SIGNED_CERT, false)) {
                 engine {
                     config {
                         sslContext(getSslContext())

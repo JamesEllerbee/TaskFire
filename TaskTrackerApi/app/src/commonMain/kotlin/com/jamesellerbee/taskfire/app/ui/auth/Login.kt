@@ -61,7 +61,7 @@ fun Login(serviceLocator: ServiceLocator, modifier: Modifier = Modifier) {
                     value = username,
                     onValueChange = { username = it },
                     label = { Text("Username") },
-                    singleLine = true
+//                    singleLine = true
                 )
 
                 OutlinedTextField(
@@ -73,7 +73,7 @@ fun Login(serviceLocator: ServiceLocator, modifier: Modifier = Modifier) {
                     } else {
                         PasswordVisualTransformation()
                     },
-                    singleLine = true,
+//                    singleLine = true,
                     trailingIcon = {
                         IconButton(onClick = { showPassword = !showPassword }) {
                             Icon(

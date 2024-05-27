@@ -31,6 +31,7 @@ kotlin {
 
     sourceSets {
         val desktopMain by getting
+        val wasmJsMain by getting
 
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -52,6 +53,10 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation("io.ktor:ktor-client-java:3.0.0-wasm2")
+        }
+
+        wasmJsMain.dependencies {
+            implementation("io.ktor:ktor-client-js:3.2.0")
         }
     }
 }
