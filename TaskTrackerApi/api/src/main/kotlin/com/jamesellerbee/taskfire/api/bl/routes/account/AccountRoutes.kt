@@ -241,7 +241,13 @@ fun Routing.accountRoutes() {
             }
         }
 
-        accountRepository.addAccount(amendedAccount)
+        accountRepository.addAccount(
+            if (emailSender == null) {
+                amendedAccount.copy(verified = true)
+            } else {
+                amendedAccount
+            }
+        )
         call.respond(amendedAccount.copy(password = ""))
     }
 
