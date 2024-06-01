@@ -180,7 +180,7 @@ fun Routing.accountRoutes() {
                 value = token,
                 path = "/",
                 httpOnly = false,
-                secure = true,
+                secure = applicationProperties.get("useSsl", "true").toBooleanStrict(),
                 domain = applicationProperties["domain"] as String
             )
         )

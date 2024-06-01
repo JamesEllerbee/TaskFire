@@ -1,4 +1,4 @@
 {
   "allowSelfSignedCert": "true",
-  "domain": "https://localhost:8443"
+  "domain": "http://localhost:8081"
 }

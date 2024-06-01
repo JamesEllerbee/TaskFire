@@ -32,6 +32,7 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.engine.applicationEngineEnvironment
+import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.engine.sslConnector
 import io.ktor.server.http.content.singlePageApplication
@@ -207,13 +208,21 @@ fun main(args: Array<String>) {
     }
 
     val environment = applicationEngineEnvironment {
-        sslConnector(
-            keyStore = keyStore,
-            keyAlias = "taskfireapi",
-            keyStorePassword = { (applicationProperties["keystorePassword"] as String).toCharArray() },
-            privateKeyPassword = { (applicationProperties["certificatePassword"] as String).toCharArray() }) {
-            port = applicationProperties.get("sslPort", "8443").toInt()
-            keyStorePath = keyStoreFile
+        if(applicationProperties.get("useSsl", "true").toBooleanStrict()) {
+            logger.info("Configured to use SSL")
+            sslConnector(
+                keyStore = keyStore,
+                keyAlias = "taskfireapi",
+                keyStorePassword = { (applicationProperties["keystorePassword"] as String).toCharArray() },
+                privateKeyPassword = { (applicationProperties["certificatePassword"] as String).toCharArray() }) {
+                port = applicationProperties.get("sslPort", "8443").toInt()
+                keyStorePath = keyStoreFile
+            }
+        } else {
+            logger.info("Configured to use plain HTTP")
+            connector {
+                port = applicationProperties.get("port", "8080").toInt()
+            }
         }
 
         module(Application::module)
